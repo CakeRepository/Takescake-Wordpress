@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism.min.css" rel="stylesheet" />
+    <style>
+        .chat-container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: left;
+            word-wrap: break-word !important;
+            white-space: pre-wrap !important;
+        }
+        
+        .message {
+            align-items: left;
+            word-wrap: break-word !important;
+            white-space: pre-wrap !important;
+        }
+        
+        .emoji {
+            margin-right: 8px;
+            font-size: 1.5em;
+        }
+
+        .emoji.person2 {
+            margin-left: 8px;
+            margin-right: 0;
+            background: none;
+        }
+        
+        .person1 {
+            background-color: #d0e0ff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            color: #1d3557;
+            word-wrap: break-word;  
+            max-width: 80%;    
+        }
+        
+        .person2 {
+            background-color: #d0ffd0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            color: #1d4e35;
+            word-wrap: break-word;
+        }
+
+        .person2-container {
+            display: flex;
+            justify-content: flex-end;
+            text-align: left !important;
+        }
+        .message-wrapper {
+            display: flex;
+            max-width: 80%; 
+            word-wrap: break-word !important;
+            white-space: pre-wrap !important;
+            
+        }
+        code[class*="language-"],
+        code[class*="language-"],
+        code[class*="language-"] *,
+        pre[class*="language-"] {
+            word-wrap: break-word !important;
+            white-space: pre-wrap !important;
+
+        }
+        .code-block {
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            border: 1px solid burlywood;
+            padding: 0px;
+            position: relative;
+            background-color: black;
+        }
+        .code-block-header {
+            font-size: fit-content;
+            color: white;
+            font-weight: bold;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 0px;
+        }
+        .code-block-copy-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0px;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/themes/prism.min.css" rel="stylesheet" />
+    <!-- Add the Prism JavaScript file -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/prism.min.js"></script>
+    <!-- Add the Prism language support for PowerShell -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.27.0/components/prism-powershell.min.js"></script>
+
+    <div class="chat-container">
+        <div class="message"><div class="message-wrapper"><span class="emoji">&#x1F916;</span><span class="person1">Welcome back! What would you like to chat about?</span></div></div>
+        <div class="message person2-container"><div class="message-wrapper"><span class="person2">I need some help writing a powershell script that can check all the applications on a computer using the registry and respond back with their name, uninstall string, version, and they date they were installed.</span>                <span class="emoji person2">&#x1F370;</span></div></div>
+        <div class="message"><div class="message-wrapper"><span class="emoji">&#x1F916;</span><div class="person1">Here’s an updated script that will check if Google Chrome is installed and install it if it isn’t:
+                    <pre class="code-block">
+                        <span class="code-block-header">PowerShell</span><button class="code-block-copy-button" onclick="copyCodeBlock(event)">Copy</button>
+<pre><code class="language-powershell">$uninstallKeys = Get-ChildItem HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall
+$uninstallKeys += Get-ChildItem HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
+$uninstallKeys | ForEach-Object {
+    $name = $_.GetValue("DisplayName")
+    $uninstallString = $_.GetValue("UninstallString")
+    $version = $_.GetValue("DisplayVersion")
+    $installDate = $_.GetValue("InstallDate")
+    if ($name -and $uninstallString -and $version) {
+        Write-Output "$name, $uninstallString, $version, $installDate"
+    }
+}</code></pre></pre>This script will first check if Google Chrome is already installed by looking for the uninstall key with the display name “Google Chrome”. If it’s not found, it will download the MSI installer from Google’s website and install it silently.
+                    <br />Let me know if you have any questions!</div></div></div>        
+        <div class="message person2-container">
+            <div class="message-wrapper">
+                <span class="person2">Perfect how can we do that to see if Google chrome is installed and if it isnt install it</span>                
+                <span class="emoji person2">&#x1F370;</span>
+            </div>
+        </div>
+        <div class="message"><div class="message-wrapper"><span class="emoji">&#x1F916;</span><div class="person1">Here’s an updated script that will check if Google Chrome is installed and install it if it isn’t:
+            <pre class="code-block">
+                <span class="code-block-header">PowerShell</span><button class="code-block-copy-button" onclick="copyCodeBlock(event)">Copy</button>
+<pre><code class="language-powershell">$uninstallKeys = Get-ChildItem HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall
+$uninstallKeys += Get-ChildItem HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
+$chromeKey = $uninstallKeys | Where-Object { $_.GetValue("DisplayName") -eq "Google Chrome" }
+if ($chromeKey) {
+    Write-Output "Google Chrome is already installed."
+} else {
+    $url = "https://dl.google.com/chrome/install/standalone/GoogleChromeStandaloneEnterprise64.msi"
+    $output = "$env:TEMP\chrome.msi"
+    Invoke-WebRequest -Uri $url -OutFile $output
+    Start-Process msiexec.exe -ArgumentList "/i $output /quiet" -Wait
+    Write-Output "Google Chrome has been installed."
+}</code></pre></pre>This script will first check if Google Chrome is already installed by looking for the uninstall key with the display name “Google Chrome”. If it’s not found, it will download the MSI installer from Google’s website and install it silently.
+                <br />Let me know if you have any questions!</div></div></div>
+        <div class="message person2-container">
+            <div class="message person2-container"><div class="message-wrapper">
+                <span class="person2">Can you write this to work in command prompt</span>                
+                <span class="emoji person2">&#x1F370;</span></div>
+            </div>
+        </div>
+        <div class="message"><div class="message-wrapper">
+            <span class="emoji">&#x1F916;</span>
+            <div class="person1">Sure! Here’s the updated script that will work in Command Prompt:
+            <pre class="code-block"><span class="code-block-header">Command Prompt</span><button class="code-block-copy-button" onclick="copyCodeBlock(event)">Copy</button>
+<pre><code class="language-cmd">@echo off
+
+setlocal EnableExtensions EnableDelayedExpansion
+
+set "chromeKey="
+for /f "tokens=2,*" %%a in ('reg query "HKLM\Software\Microsoft\Windows\CurrentVersion\Uninstall" /s /f "Google Chrome" /d /t REG_SZ /reg:64 2^>nul') do (
+    set "chromeKey=%%b"
+)
+
+if defined chromeKey (
+    echo Google Chrome is already installed.
+) else (
+    powershell -Command "(New-Object System.Net.WebClient).DownloadFile('https://dl.google.com/chrome/install/standalone/GoogleChromeStandaloneEnterprise64.msi', '%TEMP%\chrome.msi')"
+    msiexec /i "%TEMP%\chrome.msi" /quiet
+    echo Google Chrome has been installed.
+)
+
+endlocal</code></pre></pre>This script will first check if Google Chrome is already installed by looking for the uninstall key with the display name “Google Chrome”. If it’s not found, it will download the MSI installer from Google’s website and install it silently.
+
+Let me know if you have any questions!          </div>
+        </div>     
+    </div>
+      <script>
+        function copyCodeBlock(event) {
+          const codeBlock = event.target.parentNode.querySelector('pre > code');
+          const range = document.createRange();
+          range.selectNode(codeBlock);
+          window.getSelection().removeAllRanges();
+          window.getSelection().addRange(range);
+          document.execCommand('copy');
+        }
+      </script>
+</body>
+</html>
